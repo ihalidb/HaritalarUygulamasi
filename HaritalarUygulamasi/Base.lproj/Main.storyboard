@@ -18,26 +18,55 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rlQ-wm-o3u">
-                                <rect key="frame" x="0.0" y="48" width="414" height="814"/>
+                                <rect key="frame" x="0.0" y="178" width="414" height="624"/>
                                 <standardMapConfiguration key="preferredConfiguration"/>
                             </mapView>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="İsim Giriniz" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="HzD-G2-E7X">
+                                <rect key="frame" x="20" y="85" width="374" height="34"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QpM-Wq-SfZ">
+                                <rect key="frame" x="169" y="810" width="94" height="35"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Kaydet"/>
+                                <connections>
+                                    <action selector="kaydetTiklandi:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Bwv-mT-KNg"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Notunuzu Giriniz" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="pMW-Dj-lOV">
+                                <rect key="frame" x="20" y="127" width="369" height="34"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="rlQ-wm-o3u" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="HM7-fq-Kep"/>
-                            <constraint firstItem="rlQ-wm-o3u" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="TQ7-do-xbp"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="rlQ-wm-o3u" secondAttribute="trailing" id="Zmc-k3-9Nf"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="rlQ-wm-o3u" secondAttribute="bottom" id="lRP-8X-ga9"/>
+                            <constraint firstAttribute="trailing" secondItem="rlQ-wm-o3u" secondAttribute="trailing" id="2KB-MQ-Pyy"/>
+                            <constraint firstItem="HzD-G2-E7X" firstAttribute="centerX" secondItem="rlQ-wm-o3u" secondAttribute="centerX" id="Aih-MS-TY0"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="QpM-Wq-SfZ" secondAttribute="trailing" constant="151" id="EFH-t0-1tK"/>
+                            <constraint firstItem="rlQ-wm-o3u" firstAttribute="top" secondItem="pMW-Dj-lOV" secondAttribute="bottom" constant="17" id="EgI-ee-3Qe"/>
+                            <constraint firstItem="HzD-G2-E7X" firstAttribute="leading" secondItem="pMW-Dj-lOV" secondAttribute="leading" id="Wxb-CQ-lw0"/>
+                            <constraint firstItem="QpM-Wq-SfZ" firstAttribute="top" secondItem="rlQ-wm-o3u" secondAttribute="bottom" constant="8" symbolic="YES" id="XqZ-WH-rop"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="QpM-Wq-SfZ" secondAttribute="bottom" constant="17" id="aOc-4u-m0f"/>
+                            <constraint firstItem="HzD-G2-E7X" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="37" id="b0i-IZ-AOX"/>
+                            <constraint firstItem="HzD-G2-E7X" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="fvJ-py-N7A"/>
+                            <constraint firstItem="QpM-Wq-SfZ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="169" id="lsj-NG-Ofu"/>
+                            <constraint firstItem="pMW-Dj-lOV" firstAttribute="top" secondItem="HzD-G2-E7X" secondAttribute="bottom" constant="8" symbolic="YES" id="ngR-gj-w59"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="pMW-Dj-lOV" secondAttribute="trailing" constant="25" id="sHJ-xs-1HT"/>
+                            <constraint firstItem="rlQ-wm-o3u" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="uVu-a6-Cgo"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="isimTextField" destination="HzD-G2-E7X" id="sCG-rc-at5"/>
                         <outlet property="mapView" destination="rlQ-wm-o3u" id="PuS-7e-lbE"/>
+                        <outlet property="notTextField" destination="pMW-Dj-lOV" id="4ih-M6-lkh"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="132" y="-27"/>
+            <point key="canvasLocation" x="131.8840579710145" y="-27.455357142857142"/>
         </scene>
     </scenes>
     <resources>
