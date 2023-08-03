@@ -21,7 +21,8 @@ class MapsViewController: UIViewController, MKMapViewDelegate, CLLocationManager
     var secilenLatitude = Double()
     var secilenLongitude = Double()
     
-    
+    var secilenIsim = ""
+    var secilenId : UUID?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +37,15 @@ class MapsViewController: UIViewController, MKMapViewDelegate, CLLocationManager
         
         gestureRecognizer.minimumPressDuration = 2
         mapView.addGestureRecognizer(gestureRecognizer)
+        
+        if secilenIsim != "" {
+            
+            if let uuidString = secilenId?.uuidString {
+                print(uuidString)
+            }
+        } else {
+            
+        }
     }
     
     @objc func konumSec(gestureRecognizer: UILongPressGestureRecognizer) {
@@ -53,6 +63,9 @@ class MapsViewController: UIViewController, MKMapViewDelegate, CLLocationManager
             annotation.subtitle = notTextField.text
             mapView.addAnnotation(annotation)
             
+            
+            
+            
         }
     }
     
@@ -61,7 +74,7 @@ class MapsViewController: UIViewController, MKMapViewDelegate, CLLocationManager
         //print(locations[0].coordinate.longitude)
         let location = CLLocationCoordinate2D(latitude: locations[0].coordinate.latitude, longitude:  locations[0].coordinate.longitude)
         
-        let span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
         let region = MKCoordinateRegion(center: location, span: span)
         mapView.setRegion(region, animated: true)
     }
