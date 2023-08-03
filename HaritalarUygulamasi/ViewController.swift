@@ -26,6 +26,25 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
         
+        let gestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(konumSec(gestureRecognizer:)))
+        
+        gestureRecognizer.minimumPressDuration = 2
+        mapView.addGestureRecognizer(gestureRecognizer)
+    }
+    
+    @objc func konumSec(gestureRecognizer: UILongPressGestureRecognizer) {
+        if gestureRecognizer.state == .began {
+            
+            let dokunulanNokta = gestureRecognizer.location(in: mapView)
+            let dokonulanKordinat = mapView.convert(dokunulanNokta, toCoordinateFrom: mapView)
+            
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = dokonulanKordinat
+            annotation.title = "Kullanıcı Seçimi"
+            annotation.subtitle = "Altyazı"
+            mapView.addAnnotation(annotation)
+            
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -33,9 +52,8 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         //print(locations[0].coordinate.longitude)
         let location = CLLocationCoordinate2D(latitude: locations[0].coordinate.latitude, longitude:  locations[0].coordinate.longitude)
         
-        let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        let span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
         let region = MKCoordinateRegion(center: location, span: span)
-        
         mapView.setRegion(region, animated: true)
     }
 
