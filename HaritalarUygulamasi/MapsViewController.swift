@@ -24,9 +24,15 @@ class MapsViewController: UIViewController, MKMapViewDelegate, CLLocationManager
     var secilenIsim = ""
     var secilenId : UUID?
     
+    var annotationTitle = ""
+    var annotationSubitle = ""
+    var annotationLatitude = Double()
+    var annotationLongitude = Double()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view
+        // Do any additional setup after loading the view"
         mapView.delegate = self
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -35,16 +41,109 @@ class MapsViewController: UIViewController, MKMapViewDelegate, CLLocationManager
         
         let gestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(konumSec(gestureRecognizer:)))
         
-        gestureRecognizer.minimumPressDuration = 2
+        gestureRecognizer.minimumPressDuration = 1
         mapView.addGestureRecognizer(gestureRecognizer)
         
         if secilenIsim != "" {
             
             if let uuidString = secilenId?.uuidString {
-                print(uuidString)
+                
+                let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                let context = appDelegate.persistentContainer.viewContext
+                
+                let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Yeniyer")
+                fetchRequest.predicate = NSPredicate(format: "id = %@", uuidString)
+                fetchRequest.returnsObjectsAsFaults = false
+                
+                do {
+                    let sonuclar = try context.fetch(fetchRequest)
+                    
+                    if sonuclar.count > 0 {
+                        for sonuc in sonuclar as! [NSManagedObject] {
+                            
+                            if let isim = sonuc.value(forKey: "isim") as? String{
+                                annotationTitle = isim
+                                
+                                if let not = sonuc.value(forKey: "not") as? String{
+                                    annotationSubitle = not
+                                    
+                                    if let latitude = sonuc.value(forKey: "latitude") as? Double{
+                                        annotationLatitude = latitude
+                                        
+                                        if let longitude = sonuc.value(forKey: "longitude") as? Double{
+                                            annotationLongitude = longitude
+                                            
+                                            let annotation = MKPointAnnotation()
+                                            annotation.title = annotationTitle
+                                            annotation.subtitle = annotationSubitle
+                                            let coordinate = CLLocationCoordinate2D(latitude: annotationLatitude, longitude: annotationLongitude)
+                                            annotation.coordinate = coordinate
+                                            
+                                            mapView.addAnnotation(annotation)
+                                            isimTextField.text = annotationTitle
+                                            notTextField.text = annotationSubitle
+                                            
+                                            let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                                            let region = MKCoordinateRegion(center: coordinate, span: span)
+                                            mapView.setRegion(region, animated: true)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch {
+                    print("Hata var!")
+                }
+                
             }
         } else {
             
+        }
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        if annotation is MKUserLocation {
+            return nil
+        }
+        let reuseId = "benimAnnotation"
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId)
+        
+        if pinView == nil {
+            
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView?.canShowCallout = true
+            pinView?.tintColor = .green
+            
+            let button = UIButton(type: .detailDisclosure)
+            pinView?.rightCalloutAccessoryView = button
+            
+        } else {
+            pinView?.annotation = annotation
+        }
+        return pinView
+    }
+    
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        if secilenIsim != "" {
+            
+            var requestLocation = CLLocation(latitude: annotationLatitude, longitude: annotationLongitude)
+            
+            CLGeocoder().reverseGeocodeLocation(requestLocation) { (placemarkDizisi, hata) in
+                
+                if let placemarks = placemarkDizisi {
+                    if placemarks.count > 0 {
+                        let yeniPlacemark = MKPlacemark(placemark: placemarks[0])
+                        let item = MKMapItem(placemark: yeniPlacemark)
+                        item.name = self.annotationTitle
+                        
+                        let launchOptions = [MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDriving]
+                        item.openInMaps(launchOptions: launchOptions)
+                        
+                    }
+                    
+                }
+            }
         }
     }
     
@@ -62,6 +161,8 @@ class MapsViewController: UIViewController, MKMapViewDelegate, CLLocationManager
             annotation.title = isimTextField.text
             annotation.subtitle = notTextField.text
             mapView.addAnnotation(annotation)
+            locationManager.stopUpdatingLocation()
+            
             
             
             
@@ -72,19 +173,21 @@ class MapsViewController: UIViewController, MKMapViewDelegate, CLLocationManager
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         //print(locations[0].coordinate.latitude)
         //print(locations[0].coordinate.longitude)
-        let location = CLLocationCoordinate2D(latitude: locations[0].coordinate.latitude, longitude:  locations[0].coordinate.longitude)
-        
-        let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-        let region = MKCoordinateRegion(center: location, span: span)
-        mapView.setRegion(region, animated: true)
+        if secilenIsim == "" {
+            
+            let location = CLLocationCoordinate2D(latitude: locations[0].coordinate.latitude, longitude:  locations[0].coordinate.longitude)
+            let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+            let region = MKCoordinateRegion(center: location, span: span)
+            mapView.setRegion(region, animated: true)
+        }
     }
-
+    
     @IBAction func kaydetTiklandi(_ sender: Any) {
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
         
-        let yeniYer = NSEntityDescription.insertNewObject(forEntityName: "Yer", into: context)
+        let yeniYer = NSEntityDescription.insertNewObject(forEntityName: "Yeniyer", into: context)
         
         yeniYer.setValue(isimTextField.text, forKey: "isim")
         yeniYer.setValue(notTextField.text, forKey: "not")
@@ -98,6 +201,10 @@ class MapsViewController: UIViewController, MKMapViewDelegate, CLLocationManager
         } catch {
             print("Hata var!")
         }
+        
+        NotificationCenter.default.post(name: NSNotification.Name("yeniYerOlusturuldu"), object: nil)
+        navigationController?.popViewController(animated: true)
+        
     }
     
 }
